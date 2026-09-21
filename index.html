@@ -2,66 +2,126 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Math AI Battle: Exponential & Logarithm</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Function Quest | เกม AI เพื่อการศึกษา</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#10152d,#172b4d);color:#fff;min-height:100vh}
-.wrap{max-width:900px;margin:auto;padding:22px}.card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:22px;padding:24px;box-shadow:0 12px 35px #0005}
-h1{margin:0 0 8px;font-size:32px}h2{margin:6px 0 16px}.sub{opacity:.8}.top{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}.stat{flex:1;min-width:140px;background:#0003;border-radius:14px;padding:13px}.stat b{display:block;font-size:25px;margin-top:3px}
-.q{font-size:25px;line-height:1.5;background:#0003;padding:20px;border-radius:16px;margin:18px 0}.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.opt,button{border:0;border-radius:13px;padding:14px;font-size:18px;cursor:pointer}.opt{background:#f4f7ff;color:#111}.opt:hover{transform:translateY(-2px);background:#fff}.opt:disabled{cursor:default;opacity:.85}
-.good{background:#1e9e62!important;color:#fff!important}.bad{background:#c84b57!important;color:#fff!important}.bar{height:12px;background:#0005;border-radius:99px;overflow:hidden}.fill{height:100%;background:#62d6ff;width:0%;transition:.25s}
-#msg{min-height:34px;margin:15px 0;font-size:18px}.controls{display:flex;gap:10px;flex-wrap:wrap}.primary{background:#62d6ff;color:#06121c;font-weight:700}.secondary{background:#ffffff22;color:#fff}.hidden{display:none}
-.airow{display:flex;align-items:center;gap:10px}.face{font-size:35px}.small{font-size:14px;opacity:.75}
-@media(max-width:600px){.options{grid-template-columns:1fr}.q{font-size:21px}h1{font-size:26px}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Noto Sans Thai",sans-serif;background:linear-gradient(135deg,#dff7ff,#eee5ff);color:#25213a;min-height:100vh}
+.app{max-width:760px;margin:auto;padding:22px 15px 40px}
+header{background:linear-gradient(135deg,#22b9d8,#7654d9);color:white;border-radius:24px;padding:24px;box-shadow:0 12px 30px #51428a30}
+header h1{margin:0;font-size:30px} header p{margin:8px 0 0;opacity:.9}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.stat,.card{background:#fff;border:1px solid #e5e0ef;border-radius:18px;padding:15px;box-shadow:0 5px 18px #43376a12}
+.stat{text-align:center}.stat b{display:block;font-size:24px;color:#684ac3}.stat span{font-size:12px;color:#777}
+.card{margin-top:14px}
+.badge{display:inline-block;background:#eee8ff;color:#6144b7;padding:6px 10px;border-radius:99px;font-weight:bold;font-size:12px}
+.progress{height:8px;background:#eee;border-radius:99px;margin:12px 0;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#20b7d7,#7451d5);width:0;transition:.3s}
+.question{font-size:21px;font-weight:800;line-height:1.5;margin:15px 0}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{border:1px solid #ddd7e8;background:white;color:#29233e;border-radius:13px;padding:13px;min-height:48px;font-size:15px;font-weight:bold;cursor:pointer}
+button:hover{border-color:#7252d0;background:#faf8ff} button:disabled{cursor:not-allowed;opacity:.6}
+.primary{background:#694bd0;color:white;border-color:#694bd0}
+.feedback{margin-top:13px;padding:14px;border-radius:13px;background:#f6f4fa;line-height:1.55}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.ai{border-left:5px solid #7654d9;background:#f7f4ff}
+.small{font-size:13px;color:#777}
+.hidden{display:none}
+.result{text-align:center;padding:20px}.result .big{font-size:46px;font-weight:900;color:#684ac3}
+@media(max-width:520px){.choices{grid-template-columns:1fr}.question{font-size:18px}}
 </style>
 </head>
 <body>
-<div class="wrap"><div class="card">
-<h1>🤖 Math AI Battle</h1><div class="sub">เกมต่อสู้กับ AI: ฟังก์ชันเอกซ์โพเนนเชียลและฟังก์ชันลอการิทึม</div>
-<div id="start">
-<h2>🎮 กติกา</h2>
-<p>ตอบโจทย์ให้ถูกและเร็วกว่า AI • 10 ข้อ • AI จะปรับความเร็วตามผลงานของคุณ</p>
-<button class="primary" onclick="startGame()">เริ่มเกม</button>
+<div class="app">
+<header>
+<h1>⚡ Function Quest</h1>
+<p>เกม AI เพื่อการศึกษา • เรื่อง ฟังก์ชัน</p>
+</header>
+
+<div class="stats">
+<div class="stat"><b id="score">0</b><span>คะแนน</span></div>
+<div class="stat"><b id="round">1/10</b><span>ข้อ</span></div>
+<div class="stat"><b id="streak">0</b><span>Combo</span></div>
 </div>
-<div id="game" class="hidden">
-<div class="top">
-<div class="stat">คะแนนคุณ<b id="score">0</b></div>
-<div class="stat">คะแนน AI<b id="aiscore">0</b></div>
-<div class="stat">ข้อที่<b id="num">1/10</b></div>
+
+<main id="game" class="card">
+<span class="badge" id="topic">พื้นฐานฟังก์ชัน</span>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="question" class="question">กำลังโหลดโจทย์...</div>
+<div id="choices" class="choices"></div>
+<div id="feedback"></div>
+<div class="actions">
+<button id="next" class="primary" disabled>ข้อถัดไป →</button>
+<button id="restart">เริ่มใหม่</button>
 </div>
-<div class="airow"><div class="face">🤖</div><div style="flex:1"><b>AI กำลังคิด...</b><div class="bar"><div class="fill" id="aibar"></div></div><div class="small" id="aitext"></div></div></div>
-<div class="q" id="question"></div>
-<div class="options" id="options"></div>
-<div id="msg"></div>
-<button class="secondary" onclick="nextQuestion()" id="next" disabled>ข้อถัดไป →</button>
+</main>
+
+<section class="card ai">
+<strong>🤖 AI Tutor</strong>
+<p id="tip" class="small">ตอบคำถามเพื่อรับคำอธิบายและเรียนรู้วิธีคิด</p>
+</section>
+
+<section id="result" class="card result hidden">
+<div>🏆 ภารกิจสำเร็จ!</div>
+<div id="finalScore" class="big">0</div>
+<p>คะแนนของคุณ</p>
+<button class="primary" id="playAgain">เล่นอีกครั้ง</button>
+</section>
 </div>
-<div id="end" class="hidden">
-<h2>🏁 จบเกม</h2><div id="result"></div>
-<button class="primary" onclick="startGame()">เล่นอีกครั้ง</button>
-</div>
-</div></div>
+
 <script>
-const qs=[
-{q:"ถ้า 2^x = 16 แล้ว x เท่ากับเท่าไร?",a:["2","3","4","8"],c:2,e:"exp"},
-{q:"ค่า log₂(32) เท่ากับเท่าไร?",a:["4","5","6","16"],c:1,e:"log"},
-{q:"ถ้า 3^x = 81 แล้ว x เท่ากับเท่าไร?",a:["2","3","4","5"],c:2,e:"exp"},
-{q:"ค่า log₁₀(1000) เท่ากับเท่าไร?",a:["2","3","10","100"],c:1,e:"log"},
-{q:"ข้อใดเท่ากับ 2⁻³?",a:["-8","-6","1/8","1/6"],c:2,e:"exp"},
-{q:"ถ้า log₃(x)=2 แล้ว x เท่ากับเท่าไร?",a:["5","6","9","12"],c:2,e:"log"},
-{q:"ค่า 4^0 เท่ากับเท่าไร?",a:["0","1","4","ไม่กำหนด"],c:1,e:"exp"},
-{q:"ถ้า log₂(x)=5 แล้ว x เท่ากับเท่าไร?",a:["10","16","25","32"],c:3,e:"log"},
-{q:"กราฟ y=2^x เป็นฟังก์ชันประเภทใด?",a:["เอกซ์โพเนนเชียล","ลอการิทึม","กำลังสอง","เส้นตรง"],c:0,e:"exp"},
-{q:"ฟังก์ชันใดเป็นอินเวอร์สของ y=2^x?",a:["y=x²","y=log₂(x)","y=2x","y=ln(x²)"],c:1,e:"log"},
-{q:"ค่า log₅(1) เท่ากับเท่าไร?",a:["0","1","5","-1"],c:0,e:"log"},
-{q:"ถ้า 10^x=0.01 แล้ว x เท่ากับเท่าไร?",a:["-2","-1","2","10"],c:0,e:"exp"}
+const questions=[
+{t:"การหาค่าฟังก์ชัน",q:"กำหนด f(x)=2x+3 แล้ว f(4) มีค่าเท่าใด?",c:["7","8","11","12"],a:2,e:"แทน x=4 ลงใน f(x)=2x+3 ได้ 2(4)+3 = 11"},
+{t:"การหาค่าฟังก์ชัน",q:"ถ้า f(x)=x²−1 แล้ว f(3) เท่ากับเท่าใด?",c:["6","8","9","10"],a:1,e:"แทน x=3 ได้ 3²−1 = 9−1 = 8"},
+{t:"ตรวจสอบฟังก์ชัน",q:"ข้อใดอธิบายฟังก์ชันได้ถูกต้องที่สุด?",c:["สมาชิกหนึ่งตัวในโดเมนจับคู่กับหลายค่าได้","สมาชิกแต่ละตัวในโดเมนจับคู่กับผลลัพธ์เพียงหนึ่งค่า","สมาชิกในเรนจ์ต้องไม่ซ้ำกัน","โดเมนและเรนจ์ต้องมีจำนวนเท่ากันเสมอ"],a:1,e:"ฟังก์ชันกำหนดให้สมาชิกแต่ละตัวในโดเมนมีผลลัพธ์เพียงหนึ่งค่า"},
+{t:"โดเมนและเรนจ์",q:"จาก f(x)=x+5 ถ้าโดเมนคือ {1,2,3} เรนจ์คือข้อใด?",c:["{1,2,3}","{4,5,6}","{6,7,8}","{5,6,7}"],a:2,e:"f(1)=6, f(2)=7 และ f(3)=8 ดังนั้นเรนจ์คือ {6,7,8}"},
+{t:"ฟังก์ชันเชิงเส้น",q:"กราฟของ y=3x−2 มีความชันเท่าใด?",c:["−2","−3","2","3"],a:3,e:"สมการเส้นตรง y=mx+b โดย m คือความชัน ดังนั้น m=3"},
+{t:"การแทนค่า",q:"ถ้า f(x)=5−2x แล้ว f(−2) เท่ากับเท่าใด?",c:["1","5","7","9"],a:3,e:"5−2(−2)=5+4=9"},
+{t:"สมการฟังก์ชัน",q:"ถ้า f(x)=2x+1 และ f(x)=9 ค่า x คือเท่าใด?",c:["3","4","5","6"],a:1,e:"2x+1=9 → 2x=8 → x=4"},
+{t:"ความสัมพันธ์",q:"ข้อใดเป็นตัวอย่างของฟังก์ชัน?",c:["นักเรียนหนึ่งคนมีเลขประจำตัวหนึ่งเลข","คนหนึ่งคนมีวันเกิดหลายวัน","x หนึ่งค่ามี y สองค่า","หนึ่งอินพุตมีหลายเอาต์พุต"],a:0,e:"นักเรียนแต่ละคนมีเลขประจำตัวเพียงหนึ่งเลข จึงเป็นฟังก์ชัน"},
+{t:"ฟังก์ชันประกอบ",q:"ถ้า f(x)=x+2 และ g(x)=2x แล้ว f(g(3)) เท่ากับเท่าใด?",c:["6","8","10","12"],a:1,e:"g(3)=6 แล้ว f(6)=6+2=8"},
+{t:"ทบทวน",q:"ถ้า f(x)=x² และ f(a)=25 โดย a เป็นจำนวนบวก ค่า a คือเท่าใด?",c:["3","4","5","6"],a:2,e:"a²=25 และ a เป็นจำนวนบวก ดังนั้น a=5"}
 ];
-let pool=[],i=0,score=0,ai=0,locked=false,timer;
-function startGame(){pool=[...qs].sort(()=>Math.random()-.5).slice(0,10);i=0;score=0;ai=0;document.getElementById('start').classList.add('hidden');document.getElementById('end').classList.add('hidden');document.getElementById('game').classList.remove('hidden');showQ()}
-function showQ(){locked=false;let x=pool[i];document.getElementById('score').textContent=score;document.getElementById('aiscore').textContent=ai;document.getElementById('num').textContent=`${i+1}/10`;document.getElementById('question').textContent=x.q;document.getElementById('msg').textContent="";let op=document.getElementById('options');op.innerHTML="";x.a.forEach((v,n)=>{let b=document.createElement('button');b.className='opt';b.textContent=v;b.onclick=()=>answer(n,b);op.appendChild(b)});document.getElementById('next').disabled=true;runAI()}
-function runAI(){clearInterval(timer);let fill=document.getElementById('aibar'), text=document.getElementById('aitext');let skill=Math.min(.9,.42+(score/100));let t=1200-Math.random()*500-(skill*250);let start=Date.now();text.textContent="AI วิเคราะห์โจทย์...";timer=setInterval(()=>{let p=Math.min(100,(Date.now()-start)/t*100);fill.style.width=p+"%";if(p>=100){clearInterval(timer);let chance=Math.random()<skill; if(chance)ai++;text.textContent=chance?"AI ตอบเสร็จแล้ว!":"AI ติดกับดักโจทย์นี้ 😵";document.getElementById('aiscore').textContent=ai}},30)}
-function answer(n,b){if(locked)return;locked=true;clearInterval(timer);let x=pool[i];document.querySelectorAll('.opt').forEach(z=>z.disabled=true);if(n===x.c){b.classList.add('good');score+=10;document.getElementById('msg').innerHTML="✅ ถูกต้อง! +10 คะแนน"}else{b.classList.add('bad');document.querySelectorAll('.opt')[x.c].classList.add('good');document.getElementById('msg').innerHTML=`❌ ยังไม่ถูก — คำตอบคือ <b>${x.a[x.c]}</b>`}document.getElementById('score').textContent=score;document.getElementById('next').disabled=false}
-function nextQuestion(){if(!locked)return;i++;if(i>=10)finish();else showQ()}
-function finish(){document.getElementById('game').classList.add('hidden');document.getElementById('end').classList.remove('hidden');let text=score>ai?"คุณทำคะแนนได้มากกว่า AI!":score===ai?"คะแนนเท่ากับ AI!":"AI ทำคะแนนได้มากกว่าในรอบนี้";document.getElementById('result').innerHTML=`<h2>${text}</h2><p>คุณ: <b>${score}</b> คะแนน &nbsp;|&nbsp; AI: <b>${ai}</b> คะแนน</p><p>เนื้อหาที่ฝึก: เลขยกกำลัง, ฟังก์ชันเอกซ์โพเนนเชียล, ลอการิทึม และความสัมพันธ์อินเวอร์ส</p>`}
+
+let qs=[],i=0,score=0,streak=0,answered=false;
+const $=id=>document.getElementById(id);
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function start(){
+ qs=shuffle(questions);i=0;score=0;streak=0;
+ $("result").classList.add("hidden");$("game").classList.remove("hidden");show();
+}
+function show(){
+ answered=false;const q=qs[i];
+ $("score").textContent=score;$("round").textContent=`${i+1}/10`;$("streak").textContent=streak;
+ $("topic").textContent=q.t;$("question").textContent=q.q;$("bar").style.width=(i/10*100)+"%";
+ $("feedback").innerHTML="";$("next").disabled=true;
+ $("tip").textContent="เลือกคำตอบ แล้ว AI Tutor จะอธิบายแนวคิดให้";
+ const box=$("choices");box.innerHTML="";
+ q.c.forEach((x,n)=>{let b=document.createElement("button");b.textContent=x;b.addEventListener("click",()=>answer(n));box.appendChild(b)});
+}
+function answer(n){
+ if(answered)return;answered=true;const q=qs[i],ok=n===q.a;
+ document.querySelectorAll("#choices button").forEach((b,k)=>{b.disabled=true;if(k===q.a)b.style.borderColor="#694bd0"});
+ if(ok){
+  const gain=10+streak*2;score+=gain;streak++;
+  $("feedback").innerHTML=`<div class="feedback"><b>✓ ถูกต้อง!</b><br>ได้รับ ${gain} คะแนน</div>`;
+  $("tip").textContent="AI Tutor: ดีมาก ลองอธิบายด้วยตัวเองว่าทำไมจึงได้คำตอบนี้";
+ }else{
+  streak=0;
+  $("feedback").innerHTML=`<div class="feedback"><b>ยังไม่ถูกนะ</b><br>${q.e}</div>`;
+  $("tip").textContent="AI Tutor: "+q.e;
+ }
+ $("score").textContent=score;$("streak").textContent=streak;$("next").disabled=false;
+}
+$("next").addEventListener("click",()=>{if(i<9){i++;show()}else finish()});
+$("restart").addEventListener("click",start);
+$("playAgain").addEventListener("click",start);
+function finish(){
+ $("game").classList.add("hidden");$("result").classList.remove("hidden");
+ $("finalScore").textContent=score;$("bar").style.width="100%";
+ $("round").textContent="จบ";
+ $("tip").textContent="AI Tutor: ทบทวนการแทนค่า โดเมน เรนจ์ และฟังก์ชันประกอบ แล้วลองเล่นอีกครั้ง";
+}
+start();
 </script>
 </body>
 </html>
